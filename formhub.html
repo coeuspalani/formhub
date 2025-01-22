@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormHub</title>
+    <style>
+        *{
+            margin:0;
+            box-sizing: border-box;
+        }
+        body{
+            background: url("Images/filebg.jpeg");
+            background-attachment:fixed;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+        header
+        {
+            background-color: rgb(27, 25, 25);
+            padding: 10px;
+            opacity: 0.8;
+            width: 100%;
+            position:fixed;
+            top:0;
+            left:0;
+            z-index: 1000;
+        }
+        h1{
+            width:100%;
+            color: rgb(255, 215, 0);
+            text-align: center;
+        }
+        #frm
+        {
+            background-color:whitesmoke;
+            width:50%;
+            border: 1px solid #cccccc;
+            box-shadow: 3px 8px 16px rgba(0, 0, 0, 0.2);
+            margin:100px auto;
+            border-radius: 20px;
+        }
+        p{
+            padding: 10px;
+            font-weight: 800;
+        }
+        input,textarea{
+            width:90%;
+            margin:10px;
+            margin-top: 0px;
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid lightblue;
+        }
+        input:focus,textarea:focus{
+            border-color: #006699;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 102, 153, 0.5);
+        }
+        input:focus::placeholder,textarea:focus::placeholder
+        {
+            color: transparent;
+        }
+        textarea
+        {
+            resize: none;
+            height:70px;
+            width:90%;
+        }
+        button[type="submit"]
+        {
+            margin:30px;
+            width:calc(100% - 60px);
+            padding: 15px;
+            border-radius: 20px;
+            background-color: #003366;
+            border:none;
+            color: #ffffff;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            
+        }
+        button:hover {
+            background-color: #005599;
+            transform: scale(1.02);
+        }
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            padding:10px;
+            margin:10px;
+            margin-top: 0;
+            background-color: aqua;
+            border-radius: 10px;
+        }
+
+        .file-name {
+            margin-top: 0px;
+            font-size: 14px;
+            color: #333;
+            font-style: italic;
+        }
+        .file-label:hover
+        {
+            transform: scale(1.05);
+            background-color: blue;
+            color: aliceblue;
+            box-shadow: 1px 1px 5px rgba(2, 11, 15, 0.5);
+        }
+        .mrg{
+            margin-top: 20px;
+        }
+        .siu{
+            display: flex;
+            margin-bottom: 20px;
+        }
+        @media (max-width:600px) {
+            #frm
+            {
+                width:80%;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Fill Your Details</h1>
+    </header>
+    <form id="frm">
+        <p class="mrg">Username:</p>
+        <input type="text" placeholder="Enter Your Username" required id="username" autocomplete="username">
+        <p>Mail ID:</p>
+        <input type="email" placeholder="Enter Your Mail ID" required id="mail" autocomplete="email">
+        <p>Department:</p>
+        <input type="text" placeholder="Enter Your Department Name" required id="dep" autocomplete="organization">
+        <p>Project Link:</p>
+        <input type="url" placeholder="Updload Your Project Link" required id="link" autocomplete="url">
+        <p>Description:</p>
+        <textarea placeholder="Provide Description About Your Project" required id="desc" autocomplete="off"></textarea>
+        <p>Profile Image:</p>
+        <section class="siu">
+            <input type="file" id="file" accept="image/*" class="file-input" required id="pic" autocomplete="off">
+            <label for="file" class="file-label">Choose File</label>
+            <p class="file-name" id="file-name">No file chosen</p>
+        </section>
+        <button type="submit" id="sub">SUBMIT</button>
+    </form>
+    <script>
+
+
+       //image input optimisation
+        const fileInput = document.getElementById('file');
+        const fileNameDisplay = document.getElementById('file-name');
+        fileInput.addEventListener('change', () => {
+            const fileName = fileInput.files[0] ? fileInput.files[0].name : 'No file chosen';
+            fileNameDisplay.textContent = fileName; 
+        });
+
+        //next page travel and data uploading
+        document.getElementById('frm').addEventListener("submit", function(e) {
+            e.preventDefault();
+    
+            const uname = document.getElementById("username").value;
+            const ml = document.getElementById("mail").value;
+            const link = document.getElementById("link").value;
+            const desc = document.getElementById("desc").value;
+            const dep=document.getElementById("dep").value;
+            const pic = fileInput.files[0] ? fileInput.files[0].name : '';
+
+            //getting values ready for next page
+            const params = new URLSearchParams({
+                uname: uname,
+                ml: ml,
+                link: link,
+                desc: desc,
+                pic: pic,
+                dep:dep
+            }).toString();
+
+
+            //uploading to server
+            fetch("https://sheetdb.io/api/v1/3wdpcayk7gept", {
+                method: 'POST',
+                headers: {
+                    'Authorization':'Bearer n3s9vgsblphxsyz189veo7nwiv1br8fffzkm5r74',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    uname: uname,
+                    mail: ml,
+                    link: link,
+                    desc: desc,
+                    pic: pic,
+                    dep:dep
+                 })
+            })
+            .then(response => {
+                console.log('Response Status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+               console.log('SheetDB Response:', data);
+                if (data.created) {
+                    alert('Data saved to Google Sheets!');
+                    window.location.href = `printhere.html?${params}`; //moves to next page only if value is uploaded on to server
+                } else {
+                    alert('Data not saved. Check your configuration.');
+                }
+            })
+            .catch(error => {
+                alert('Unable to Upload to Google Sheets');
+                console.error('Error saving data:', error);
+            });
+        });
+
+    </script>
+    
+</body>
+</html>

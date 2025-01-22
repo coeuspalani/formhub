@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetHere</title>
+</head>
+<body>
+    <img id="pic" alt="Profile Picture">
+    <p id="uname"></p>
+    <p id="ml"></p>
+    <p id="dep"></p>
+    <p id="link"></p>
+    <p id="desc"></p>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const uname=params.get("uname");
+        const mail=params.get("ml");
+        const link=params.get("link");
+        const desc=params.get("desc");
+        const pic=params.get("pic");
+        const dep=params.get("dep");
+        document.getElementById("uname").innerText=`UserName: ${uname}`;
+        document.getElementById("ml").innerText=`Mail ID: ${mail}`;
+        document.getElementById("link").innerText=`Project Link: ${link}`;
+        document.getElementById("dep").innerText=`Department:${dep}`;
+        document.getElementById("desc").innerText=`Project Description: ${desc}`;
+        document.getElementById("pic").src=pic;
+        
+
+
+    </script>
+</body>
+</html>
