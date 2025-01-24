@@ -4,30 +4,217 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GetHere</title>
+
+    <!-- Importing fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Eater&family=Lora:ital,wght@0,400..700;1,400..700&family=Righteous&family=Roboto:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+
+    <!-- Styling the web -->
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        background-color: #f0f0f0;
+        background: linear-gradient(to bottom, #003366, #006699);
+        background-repeat: no-repeat;
+        font-family: "Roboto", sans-serif;
+    }
+
+    form {
+        display: flex;
+        align-items: center;
+        border: 1px solid black;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 700px;
+        background-color: wheat;
+        margin: 20px;
+        overflow-wrap: break-word;
+    }
+
+    img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-right: 20px;
+        object-fit: cover;
+        border: 1px solid #ccc;
+    }
+
+    section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    p {
+        margin: 0;
+        font-size: 14px;
+        color: #333;
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 700;
+        word-wrap: break-word;
+    }
+
+    button {
+        font-family: 'Times New Roman', Times, serif;
+        margin: 20px;
+        padding: 10px 20px;
+        width: 50%;
+        max-width: 300px;
+        border-radius: 30px;
+        background-color: whitesmoke;
+        font-size: 1em;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+        background-color: blue;
+        color: whitesmoke;
+    }
+
+    @media (max-width: 768px) {
+        form {
+            flex-direction: column;
+            width: 90%;
+            padding: 15px;
+        }
+
+        img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 12px;
+        }
+
+        button {
+            width: 80%;
+            max-width: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        body {
+            padding: 10px;
+        }
+
+        form {
+            width: 100%;
+            padding: 10px;
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+        }
+
+        p {
+            font-size: 11px;
+        }
+
+        button {
+            width: 90%;
+            max-width: none;
+        }
+    }
+
+    @media print {
+        * {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        button {
+            display: none;
+        }
+        form{
+          border:2px solid black;
+        }
+        body {
+            margin: 0;
+            padding: 0; /*bg:none is removed*/
+        }
+
+        header, footer {
+            display: none;
+        }
+
+        @page {
+            margin: 0;
+            size:auto;
+        }
+
+        .no-print {
+            display: none;
+        }
+    }
+    </style>
 </head>
 <body>
-    <img id="pic" alt="Profile Picture">
-    <p id="uname"></p>
-    <p id="ml"></p>
-    <p id="dep"></p>
-    <p id="link"></p>
-    <p id="desc"></p>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const uname=params.get("uname");
-        const mail=params.get("ml");
-        const link=params.get("link");
-        const desc=params.get("desc");
-        const pic=params.get("pic");
-        const dep=params.get("dep");
-        document.getElementById("uname").innerText=`UserName: ${uname}`;
-        document.getElementById("ml").innerText=`Mail ID: ${mail}`;
-        document.getElementById("link").innerText=`Project Link: ${link}`;
-        document.getElementById("dep").innerText=`Department:${dep}`;
-        document.getElementById("desc").innerText=`Project Description: ${desc}`;
-        document.getElementById("pic").src=pic;
-        
+    <form id="myForm">
+        <img id="pic" alt="Profile Picture">
+        <section>
+            <p id="uname"></p>
+            <p id="ml"></p>
+            <p id="dep"></p>
+        </section>
+    </form>
+    <button onclick="window.print()">Print Form</button>
 
+    <script>
+
+        //getting image from localfile
+        const imageData = localStorage.getItem("uploadedImage");
+        if (imageData) {
+            document.getElementById("pic").src = imageData;
+        } else {
+            alert("No image found! Please upload an image first.");
+            window.location.href = "index.html";  
+        }
+
+
+        //retrieving text data from json file 
+        const jsondata=localStorage.getItem("userdata");
+        if (jsondata) {
+            const userData = JSON.parse(jsondata);
+            const uname =userData.uname;
+            const mail = userData.ml;
+            const dep = userData.dep;
+            console.log("Retrieved from localStorage:", jsondata);
+            document.getElementById("uname").innerText = `UserName: ${uname}`;
+            document.getElementById("ml").innerText = `Mail ID: ${mail}`;
+            document.getElementById("dep").innerText = `Department: ${dep}`;
+            document.getElementById("pic").alt = uname ? `${uname}'s Profile Picture` : "Default Profile Picture";
+        }
+        else {
+            console.log("No data found in localStorage");
+        }
+        window.onafterprint = function () {
+            alert("Thank You For Visiting. You are Redirected to Main Page");
+            window.location.href = "index.html";
+        };
 
     </script>
 </body>
